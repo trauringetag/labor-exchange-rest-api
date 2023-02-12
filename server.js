@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
     res.json({ response: "REST API для веб-сервиса биржи труда" });
 });
 
-require('./app/routes/tutorial.routes')(app);
+require('./app/routes/services.routes')(app);
 
 const PORT = process.env.PORT || 8080;
 
