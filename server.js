@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-
 const corsOptions = { origin: 'http://localhost:8081' };
 
 app.use(cors(corsOptions));
@@ -12,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 const db = require('./app/models');
 
 db.sequelize.sync().then(() => {
-    console.log('Синхронизированная база данных');
+    console.log('База данных синхронизирована');
 }).catch(err => {
     console.log(`Не удалось синхронизировать базу данных: ${err.message}`);
 });
