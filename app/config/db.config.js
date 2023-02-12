@@ -2,7 +2,7 @@ module.exports = {
     HOST: "osp74.beget.tech",
     USER: "osp74_klimkin",
     PASSWORD: "Q123q123!",
-    DB: "osp74_klimkin",
+    DATABASE: "osp74_klimkin",
     dialect: "mysql",
     pool: {
         max: 5,
