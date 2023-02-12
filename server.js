@@ -9,13 +9,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// const db = require('./app/models');
-//
-// db.sequelize.sync().then(() => {
-//     console.log('Синхронизированная база данных');
-// }).catch(err => {
-//     console.log(`Не удалось синхронизировать базу данных: ${err.message}`);
-// });
+const db = require('./app/models');
+
+db.sequelize.sync().then(() => {
+    console.log('Синхронизированная база данных');
+}).catch(err => {
+    console.log(`Не удалось синхронизировать базу данных: ${err.message}`);
+});
 
 app.get('/', (req, res) => {
     res.json({ response: "REST API для веб-сервиса биржи труда" });
