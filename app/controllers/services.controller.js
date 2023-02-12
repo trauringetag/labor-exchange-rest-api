@@ -47,7 +47,7 @@ exports.update = (req, res) => {
     const id = req.params.id;
     Services.update(req.body, { where: { id: id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно обновлено!' });
-        else res.send({ message: `Невозможно обновить ID ${id}. Возможно, req.body пуст!` });
+        else res.status(404).send({ message: `Невозможно обновить ID ${id}. Возможно, req.body пуст!` });
     }).catch(() => {
         res.status(500).send({ message: `Ошибка при обновлении ID ${id}` });
     });
@@ -57,7 +57,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
     Services.destroy({ where: { id: id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно удалено!' });
-        else res.send({ message: `Невозможно удалить ID ${id}. Возможно, ничего не найдено!` });
+        else res.status(404).send({ message: `Невозможно удалить ID ${id}. Возможно, ничего не найдено!` });
     }).catch(() => {
         res.status(500).send({ message: `Не удалось удалить ID ${id}` });
     });
