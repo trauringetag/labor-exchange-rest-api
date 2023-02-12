@@ -17,7 +17,11 @@ db.sequelize.sync().then(() => {
 });
 
 app.get('/', (req, res) => {
-    res.json({ response: "REST API для веб-сервиса биржи труда" });
+    res.json({
+        title: 'REST API',
+        services: '/api/services',
+        working_mode: '/api/working_mode'
+    });
 });
 
 require('./app/routes/services.routes')(app);
