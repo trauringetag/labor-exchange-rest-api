@@ -19,8 +19,8 @@ db.sequelize.sync().then(() => {
 app.get('/', (req, res) => {
     res.json({
         title: 'REST API',
-        services: '/api/services',
-        working_mode: '/api/working_mode'
+        db_services: '/api/services',
+        db_working_mode: '/api/working_mode'
     });
 });
 
