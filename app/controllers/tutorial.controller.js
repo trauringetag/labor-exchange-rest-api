@@ -63,7 +63,7 @@ exports.deleteAll = (req, res) => {
     Tutorial.destroy({
         where: {}, truncate: false
     }).then(nums => {
-        res.send({ message: `${nums} объекта успешно удалены!` });
+        res.send({ message: `Количество удалённых объектов: ${nums}.` });
     }).catch(err => {
         res.status(500).send({
             message: err.message || 'Произошла ошибка при удалении...'
