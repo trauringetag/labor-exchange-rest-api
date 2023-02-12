@@ -1,18 +1,17 @@
 const db = require('../models');
-const Services = db.services;
+const WorkingMode = db.working_mode;
 const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
-    if (!req.body.description) {
+    if (!req.body.day) {
         res.status(400).send({ message: 'Контент не может быть пустым!' });
         return;
     }
-    const services = {
-        description: req.body.description,
-        cabinet: req.body.cabinet,
-        phone: req.body.phone
+    const working_mode = {
+        day: req.body.day,
+        opening_hours: req.body.opening_hours
     };
-    Services.create(services).then(data => { res.send(data); }).catch(err => {
+    WorkingMode.create(working_mode).then(data => { res.send(data); }).catch(err => {
         res.status(500).send({
             message: err.message || 'Произошла ошибка при добавлении...'
         });
@@ -20,9 +19,9 @@ exports.create = (req, res) => {
 };
 
 exports.findAll = (req, res) => {
-    const description = req.query.description;
-    const condition = description ? { description: { [Op.like]: `%${description}%` } } : null;
-    Services.findAll({ where: condition }).then(data => { res.send(data); }).catch(err => {
+    const day = req.query.day;
+    const condition = day ? { day: { [Op.like]: `%${day}%` } } : null;
+    WorkingMode.findAll({ where: condition }).then(data => { res.send(data); }).catch(err => {
         res.status(500).send({
             message: err.message || 'Произошла ошибка при получении...'
         });
@@ -31,7 +30,7 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Services.findByPk(id).then(data => {
+    WorkingMode.findByPk(id).then(data => {
         if (data) res.send(data);
         else res.status(404).send({ message: `Не удаётся найти ID ${id}.`});
     }).catch(() => {
@@ -41,7 +40,7 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
     const id = req.params.id;
-    Services.update(req.body, { where: { id: id } }).then(num => {
+    WorkingMode.update(req.body, { where: { id: id } }).then(num => {
         if (num == 1) res.send({ message: 'Успешно обновлено!' });
         else res.send({ message: `Невозможно обновить ID ${id}. Возможно, req.body пуст!` });
     }).catch(() => {
@@ -51,7 +50,7 @@ exports.update = (req, res) => {
 
 exports.delete = (req, res) => {
     const id = req.params.id;
-    Services.destroy({ where: { id: id } }).then(num => {
+    WorkingMode.destroy({ where: { id: id } }).then(num => {
         if (num == 1) res.send({ message: 'Успешно удалено!' });
         else res.send({ message: `Невозможно удалить ID ${id}. Возможно, ничего не найдено!` });
     }).catch(() => {
@@ -60,7 +59,7 @@ exports.delete = (req, res) => {
 };
 
 exports.deleteAll = (req, res) => {
-    Services.destroy({
+    WorkingMode.destroy({
         where: {}, truncate: false
     }).then(nums => {
         res.send({ message: `Количество удалённых объектов: ${nums}.` });

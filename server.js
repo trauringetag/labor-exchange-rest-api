@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 });
 
 require('./app/routes/services.routes')(app);
+require('./app/routes/working_mode.routes')(app);
 
 const PORT = process.env.PORT || 8080;
 

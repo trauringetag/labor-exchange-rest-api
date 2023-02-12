@@ -19,5 +19,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.services = require('./services.model')(sequelize, Sequelize);
+db.working_mode = require('./working_mode.model')(sequelize, Sequelize);
 
 module.exports = db;
