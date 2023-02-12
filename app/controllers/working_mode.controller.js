@@ -11,7 +11,9 @@ exports.create = (req, res) => {
         day: req.body.day,
         opening_hours: req.body.opening_hours
     };
-    WorkingMode.create(working_mode).then(data => { res.send(data); }).catch(err => {
+    WorkingMode.create(working_mode).then(data => {
+        res.status(200).send(data);
+    }).catch(err => {
         res.status(500).send({
             message: err.message || 'Произошла ошибка при добавлении...'
         });
@@ -21,7 +23,9 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const day = req.query.day;
     const condition = day ? { day: { [Op.like]: `%${day}%` } } : null;
-    WorkingMode.findAll({ where: condition }).then(data => { res.send(data); }).catch(err => {
+    WorkingMode.findAll({ where: condition }).then(data => {
+        res.status(200).send(data);
+    }).catch(err => {
         res.status(500).send({
             message: err.message || 'Произошла ошибка при получении...'
         });
@@ -31,7 +35,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const id = req.params.id;
     WorkingMode.findByPk(id).then(data => {
-        if (data) res.send(data);
+        if (data) res.status(200).send(data);
         else res.status(404).send({ message: `Не удаётся найти ID ${id}.`});
     }).catch(() => {
         res.status(500).send({ message: `Ошибка при получении ID ${id}.` });
@@ -41,7 +45,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     WorkingMode.update(req.body, { where: { id: id } }).then(num => {
-        if (num == 1) res.send({ message: 'Успешно обновлено!' });
+        if (num == 1) res.status(200).send({ message: 'Успешно обновлено!' });
         else res.send({ message: `Невозможно обновить ID ${id}. Возможно, req.body пуст!` });
     }).catch(() => {
         res.status(500).send({ message: `Ошибка при обновлении ID ${id}` });
@@ -51,7 +55,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
     WorkingMode.destroy({ where: { id: id } }).then(num => {
-        if (num == 1) res.send({ message: 'Успешно удалено!' });
+        if (num == 1) res.status(200).send({ message: 'Успешно удалено!' });
         else res.send({ message: `Невозможно удалить ID ${id}. Возможно, ничего не найдено!` });
     }).catch(() => {
         res.status(500).send({ message: `Не удалось удалить ID ${id}` });
@@ -59,10 +63,8 @@ exports.delete = (req, res) => {
 };
 
 exports.deleteAll = (req, res) => {
-    WorkingMode.destroy({
-        where: {}, truncate: false
-    }).then(nums => {
-        res.send({ message: `Количество удалённых объектов: ${nums}.` });
+    WorkingMode.destroy({ where: {}, truncate: false }).then(nums => {
+        res.status(200).send({ message: `Количество удалённых объектов: ${nums}.` });
     }).catch(err => {
         res.status(500).send({
             message: err.message || 'Произошла ошибка при удалении...'
