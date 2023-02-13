@@ -4,10 +4,5 @@ module.exports = {
     PASSWORD: "Q123q123!",
     DATABASE: "osp74_klimkin",
     dialect: "mysql",
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    }
+    pool: { max: 5, min: 0, acquire: 30000, idle: 10000 }
 };
