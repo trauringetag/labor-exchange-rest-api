@@ -21,13 +21,15 @@ app.get('/', (req, res) => {
         title: 'REST API',
         db_services: '/api/services',
         db_working_mode: '/api/working_mode',
-        db_labor_statistics: '/api/labor_statistics'
+        db_labor_statistics: '/api/labor_statistics',
+        db_articles: '/api/articles'
     });
 });
 
 require('./app/routes/services.routes')(app);
 require('./app/routes/working_mode.routes')(app);
 require('./app/routes/labor_statistics.routes')(app);
+require('./app/routes/articles.routes')(app);
 
 const PORT = process.env.PORT || 8080;
 
