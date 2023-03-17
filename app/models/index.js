@@ -22,5 +22,6 @@ db.services = require('./services.model')(sequelize, Sequelize);
 db.working_mode = require('./working_mode.model')(sequelize, Sequelize);
 db.labor_statistics = require('./labor_statistics.model')(sequelize, Sequelize);
 db.articles = require('./articles.model')(sequelize, Sequelize);
+db.email_storage = require('./email_storage.model')(sequelize, Sequelize);
 
 module.exports = db;
