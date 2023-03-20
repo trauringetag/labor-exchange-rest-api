@@ -3,8 +3,13 @@ const EmailStorage = db.email_storage;
 const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
+    const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
     if (!req.body.email) {
-        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        res.status(400).send({ message: 'Почта не может быть пустой!' });
+        return;
+    }
+    if (!EMAIL_REGEXP.test(req.body.email)) {
+        res.status(400).send({ message: 'Неверная запись электронной почты!' });
         return;
     }
     const email_storage = { email: req.body.email };
