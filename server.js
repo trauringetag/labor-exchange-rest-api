@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
         title: 'REST API',
         db_services: '/api/services',
         db_working_mode: '/api/working_mode',
-        db_labor_statistics: '/api/labor_statistics',
+        db_situation_labor_market: '/api/situation_labor_market',
         db_articles: '/api/articles',
         db_email_storage: '/api/email_storage'
     });
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 
 require('./app/routes/services.routes')(app);
 require('./app/routes/working_mode.routes')(app);
-require('./app/routes/labor_statistics.routes')(app);
+require('./app/routes/situation_labor_market.routes')(app);
 require('./app/routes/articles.routes')(app);
 require('./app/routes/email_storage.routes')(app);
 
