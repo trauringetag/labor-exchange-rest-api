@@ -23,7 +23,8 @@ app.get('/', (req, res) => {
         db_working_mode: '/api/working_mode',
         db_situation_labor_market: '/api/situation_labor_market',
         db_articles: '/api/articles',
-        db_email_storage: '/api/email_storage'
+        db_email_storage: '/api/email_storage',
+        db_reception: '/api/reception'
     });
 });
 
@@ -32,6 +33,7 @@ require('./app/routes/working_mode.routes')(app);
 require('./app/routes/situation_labor_market.routes')(app);
 require('./app/routes/articles.routes')(app);
 require('./app/routes/email_storage.routes')(app);
+require('./app/routes/reception.routes')(app);
 
 const PORT = process.env.PORT || 8080;
 
