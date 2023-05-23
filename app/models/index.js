@@ -24,5 +24,6 @@ db.db_situation_labor_market = require('./situation_labor_market.model')(sequeli
 db.articles = require('./articles.model')(sequelize, Sequelize);
 db.email_storage = require('./email_storage.model')(sequelize, Sequelize);
 db.reception = require('./reception.model')(sequelize, Sequelize);
+db.accounts = require('./accounts.model')(sequelize, Sequelize);
 
 module.exports = db;
