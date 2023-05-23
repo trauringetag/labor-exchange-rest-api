@@ -7,6 +7,7 @@ module.exports = (sequelize, Sequelize) => {
         category: { type: Sequelize.STRING },
         social_status: { type: Sequelize.STRING },
         text_appeal: { type: Sequelize.STRING(1000) },
+        processed: { type: Sequelize.BOOLEAN, defaultValue: false }
     });
     return Reception;
 };

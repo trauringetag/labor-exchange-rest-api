@@ -24,7 +24,8 @@ exports.create = (req, res) => {
         phone: req.body.phone,
         category: req.body.category,
         social_status: req.body.social_status,
-        text_appeal: req.body.text_appeal
+        text_appeal: req.body.text_appeal,
+        processed: req.body.processed
     };
     Reception.create(reception).then(data => {
         res.status(200).send(data);
