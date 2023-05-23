@@ -7,6 +7,18 @@ exports.create = (req, res) => {
         res.status(400).send({ message: 'Контент не может быть пустым!' });
         return;
     }
+    if (!req.body.unemployed) {
+        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        return;
+    }
+    if (!req.body.are_registered) {
+        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        return;
+    }
+    if (!req.body.number_of_vacancies) {
+        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        return;
+    }
     const situation_labor_market = {
         period: req.body.period,
         unemployed: req.body.unemployed,

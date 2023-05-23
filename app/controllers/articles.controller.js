@@ -3,6 +3,18 @@ const Articles = db.articles;
 const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
+    if (!req.body.cover) {
+        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        return;
+    }
+    if (!req.body.head) {
+        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        return;
+    }
+    if (!req.body.preview) {
+        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        return;
+    }
     if (!req.body.body) {
         res.status(400).send({ message: 'Контент не может быть пустым!' });
         return;
