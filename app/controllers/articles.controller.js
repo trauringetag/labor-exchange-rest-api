@@ -4,19 +4,19 @@ const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
     if (!req.body.cover) {
-        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        res.status(400).send({ message: 'URL не может быть пустым!' });
         return;
     }
     if (!req.body.head) {
-        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        res.status(400).send({ message: 'Заголовок не может быть пустым!' });
         return;
     }
     if (!req.body.preview) {
-        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        res.status(400).send({ message: 'Вступление не может быть пустым!' });
         return;
     }
     if (!req.body.body) {
-        res.status(400).send({ message: 'Контент не может быть пустым!' });
+        res.status(400).send({ message: 'Тело статьи не может быть пустым!' });
         return;
     }
     const articles = {
