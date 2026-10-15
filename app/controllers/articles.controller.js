@@ -1,87 +1,36 @@
 const db = require('../models');
-const Articles = db.articles;
-const Op = db.Sequelize.Op;
+const Article = db.articles;
 
 exports.create = (req, res) => {
-    if (!req.body.cover) {
-        res.status(400).send({ message: 'URL не может быть пустым!' });
-        return;
+    if (!req.body.head || !req.body.body) {
+        return res.status(400).send({ message: 'Поля head и body обязательны!' });
     }
-    if (!req.body.head) {
-        res.status(400).send({ message: 'Заголовок не может быть пустым!' });
-        return;
-    }
-    if (!req.body.preview) {
-        res.status(400).send({ message: 'Вступление не может быть пустым!' });
-        return;
-    }
-    if (!req.body.body) {
-        res.status(400).send({ message: 'Тело статьи не может быть пустым!' });
-        return;
-    }
-    const articles = {
-        cover: req.body.cover,
-        head: req.body.head,
-        preview: req.body.preview,
-        body: req.body.body
-    };
-    Articles.create(articles).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при добавлении...'
-        });
-    });
+    Article.create(req.body).then(data => res.status(200).send(data))
+        .catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.findAll = (req, res) => {
-    const head = req.query.head;
-    const condition = head ? { head: { [Op.like]: `%${head}%` } } : null;
-    Articles.findAll({ where: condition }).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при получении...'
-        });
-    });
+    Article.findAll().then(data => res.status(200).send(data))
+        .catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.findOne = (req, res) => {
-    const id = req.params.id;
-    Articles.findByPk(id).then(data => {
+    Article.findByPk(req.params.id).then(data => {
         if (data) res.status(200).send(data);
-        else res.status(404).send({ message: `Не удаётся найти ID ${id}.`});
-    }).catch(() => {
-        res.status(500).send({ message: `Ошибка при получении ID ${id}.` });
-    });
+        else res.status(404).send({ message: `ID ${req.params.id} не найден.` });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.update = (req, res) => {
-    const id = req.params.id;
-    Articles.update(req.body, { where: { id: id } }).then(num => {
+    Article.update(req.body, { where: { id: req.params.id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно обновлено!' });
-        else res.status(404).send({ message: `Невозможно обновить ID ${id}. Возможно, req.body пуст!` });
-    }).catch(() => {
-        res.status(500).send({ message: `Ошибка при обновлении ID ${id}` });
-    });
+        else res.status(404).send({ message: 'Невозможно обновить.' });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.delete = (req, res) => {
-    const id = req.params.id;
-    Articles.destroy({ where: { id: id } }).then(num => {
+    Article.destroy({ where: { id: req.params.id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно удалено!' });
-        else res.status(404).send({ message: `Невозможно удалить ID ${id}. Возможно, ничего не найдено!` });
-    }).catch(() => {
-        res.status(500).send({ message: `Не удалось удалить ID ${id}` });
-    });
-};
-
-exports.deleteAll = (req, res) => {
-    Articles.destroy({ where: {}, truncate: false }).then(nums => {
-        res.status(200).send({ message: `Количество удалённых объектов: ${nums}.` });
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при удалении...'
-        });
-    });
+        else res.status(404).send({ message: 'Не удалось удалить.' });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };

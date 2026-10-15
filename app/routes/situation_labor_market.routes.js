@@ -1,12 +1,11 @@
-const situation_labor_market = require('../controllers/situation_labor_market.controller');
+const controller = require('../controllers/situation_labor_market.controller');
 const router = require('express').Router();
 
 module.exports = app => {
-    router.post("/", situation_labor_market.create);
-    router.get("/", situation_labor_market.findAll);
-    router.get("/:id", situation_labor_market.findOne);
-    router.put("/:id", situation_labor_market.update);
-    router.delete("/:id", situation_labor_market.delete);
-    router.delete("/", situation_labor_market.deleteAll);
+    router.post("/", controller.create);
+    router.get("/", controller.findAll);
+    router.get("/:id", controller.findOne);
+    router.put("/:id", controller.update);
+    router.delete("/:id", controller.delete);
     app.use('/api/situation_labor_market', router);
 };

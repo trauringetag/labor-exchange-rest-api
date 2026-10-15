@@ -1,75 +1,40 @@
 const db = require('../models');
 const EmailStorage = db.email_storage;
-const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
-    const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
-    if (!req.body.email) {
-        res.status(400).send({ message: 'Почта не может быть пустой!' });
-        return;
-    }
-    if (!EMAIL_REGEXP.test(req.body.email)) {
-        res.status(400).send({ message: 'Неверная запись электронной почты!' });
-        return;
-    }
-    const email_storage = { email: req.body.email };
-    EmailStorage.create(email_storage).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при добавлении...'
-        });
-    });
+    if (!req.body.email) return res.status(400).send({ message: 'Email обязателен!' });
+    EmailStorage.create(req.body).then(data => res.status(200).send(data))
+        .catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.findAll = (req, res) => {
-    const email = req.query.email;
-    const condition = email ? { email: { [Op.like]: `%${email}%` } } : null;
-    EmailStorage.findAll({ where: condition }).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при получении...'
-        });
-    });
+    EmailStorage.findAll().then(data => res.status(200).send(data))
+        .catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.findOne = (req, res) => {
-    const id = req.params.id;
-    EmailStorage.findByPk(id).then(data => {
+    EmailStorage.findByPk(req.params.id).then(data => {
         if (data) res.status(200).send(data);
-        else res.status(404).send({ message: `Не удаётся найти ID ${id}.`});
-    }).catch(() => {
-        res.status(500).send({ message: `Ошибка при получении ID ${id}.` });
-    });
+        else res.status(404).send({ message: `ID ${req.params.id} не найден.` });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.update = (req, res) => {
-    const id = req.params.id;
-    EmailStorage.update(req.body, { where: { id: id } }).then(num => {
+    EmailStorage.update(req.body, { where: { id: req.params.id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно обновлено!' });
-        else res.status(404).send({ message: `Невозможно обновить ID ${id}. Возможно, req.body пуст!` });
-    }).catch(() => {
-        res.status(500).send({ message: `Ошибка при обновлении ID ${id}` });
-    });
+        else res.status(404).send({ message: 'Невозможно обновить.' });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.delete = (req, res) => {
-    const id = req.params.id;
-    EmailStorage.destroy({ where: { id: id } }).then(num => {
+    EmailStorage.destroy({ where: { id: req.params.id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно удалено!' });
-        else res.status(404).send({ message: `Невозможно удалить ID ${id}. Возможно, ничего не найдено!` });
-    }).catch(() => {
-        res.status(500).send({ message: `Не удалось удалить ID ${id}` });
-    });
+        else res.status(404).send({ message: 'Не удалось удалить.' });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.deleteAll = (req, res) => {
     EmailStorage.destroy({ where: {}, truncate: false }).then(nums => {
-        res.status(200).send({ message: `Количество удалённых объектов: ${nums}.` });
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при удалении...'
-        });
-    });
+        res.status(200).send({ message: `Удалено: ${nums}` });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };

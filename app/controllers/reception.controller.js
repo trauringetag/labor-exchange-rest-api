@@ -5,85 +5,65 @@ const Op = db.Sequelize.Op;
 exports.create = (req, res) => {
     const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
     const PHONE_REGEXP = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/;
+
     if (!req.body.full_name || !req.body.email || !req.body.address || !req.body.phone || !req.body.text_appeal) {
-        res.status(400).send({ message: 'Поле не может быть пустым!' });
-        return;
+        return res.status(400).send({ message: 'Обязательные поля отсутствуют!' });
     }
     if (!EMAIL_REGEXP.test(req.body.email)) {
-        res.status(400).send({ message: 'Неверная запись электронной почты!' });
-        return;
+        return res.status(400).send({ message: 'Неверный формат email!' });
     }
     if (!PHONE_REGEXP.test(req.body.phone)) {
-        res.status(400).send({ message: 'Неверная запись номера телефона!' });
-        return;
+        return res.status(400).send({ message: 'Неверный формат телефона!' });
     }
-    const reception = {
-        full_name: req.body.full_name,
-        email: req.body.email,
-        address: req.body.address,
-        phone: req.body.phone,
-        category: req.body.category,
-        social_status: req.body.social_status,
-        text_appeal: req.body.text_appeal,
-        processed: req.body.processed
-    };
-    Reception.create(reception).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при добавлении...'
-        });
-    });
+
+    Reception.create(req.body).then(data => res.status(200).send(data))
+        .catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.findAll = (req, res) => {
     const full_name = req.query.full_name;
     const condition = full_name ? { full_name: { [Op.like]: `%${full_name}%` } } : null;
-    Reception.findAll({ where: condition }).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при получении...'
-        });
-    });
+
+    Reception.findAll({
+        where: condition,
+        include: [
+            { model: db.categories, as: 'category' },
+            { model: db.social_statuses, as: 'socialStatus' }
+        ]
+    })
+    .then(data => res.status(200).send(data))
+    .catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.findOne = (req, res) => {
-    const id = req.params.id;
-    Reception.findByPk(id).then(data => {
+    Reception.findByPk(req.params.id, {
+        include: [
+            { model: db.categories, as: 'category' },
+            { model: db.social_statuses, as: 'socialStatus' }
+        ]
+    })
+    .then(data => {
         if (data) res.status(200).send(data);
-        else res.status(404).send({ message: `Не удаётся найти ID ${id}.`});
-    }).catch(() => {
-        res.status(500).send({ message: `Ошибка при получении ID ${id}.` });
-    });
+        else res.status(404).send({ message: `ID ${req.params.id} не найден.` });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.update = (req, res) => {
-    const id = req.params.id;
-    Reception.update(req.body, { where: { id: id } }).then(num => {
+    Reception.update(req.body, { where: { id: req.params.id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно обновлено!' });
-        else res.status(404).send({ message: `Невозможно обновить ID ${id}. Возможно, req.body пуст!` });
-    }).catch(() => {
-        res.status(500).send({ message: `Ошибка при обновлении ID ${id}` });
-    });
+        else res.status(404).send({ message: 'Невозможно обновить.' });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.delete = (req, res) => {
-    const id = req.params.id;
-    Reception.destroy({ where: { id: id } }).then(num => {
+    Reception.destroy({ where: { id: req.params.id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно удалено!' });
-        else res.status(404).send({ message: `Невозможно удалить ID ${id}. Возможно, ничего не найдено!` });
-    }).catch(() => {
-        res.status(500).send({ message: `Не удалось удалить ID ${id}` });
-    });
+        else res.status(404).send({ message: 'Не удалось удалить.' });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.deleteAll = (req, res) => {
     Reception.destroy({ where: {}, truncate: false }).then(nums => {
-        res.status(200).send({ message: `Количество удалённых объектов: ${nums}.` });
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при удалении...'
-        });
-    });
+        res.status(200).send({ message: `Удалено: ${nums}` });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };

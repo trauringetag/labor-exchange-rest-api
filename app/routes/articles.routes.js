@@ -1,12 +1,11 @@
-const articles = require('../controllers/articles.controller');
+const controller = require('../controllers/articles.controller');
 const router = require('express').Router();
 
 module.exports = app => {
-    router.post("/", articles.create);
-    router.get("/", articles.findAll);
-    router.get("/:id", articles.findOne);
-    router.put("/:id", articles.update);
-    router.delete("/:id", articles.delete);
-    router.delete("/", articles.deleteAll);
+    router.post("/", controller.create);
+    router.get("/", controller.findAll);
+    router.get("/:id", controller.findOne);
+    router.put("/:id", controller.update);
+    router.delete("/:id", controller.delete);
     app.use('/api/articles', router);
 };

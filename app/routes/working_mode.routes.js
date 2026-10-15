@@ -1,12 +1,11 @@
-const working_mode = require('../controllers/working_mode.controller');
+const controller = require('../controllers/working_mode.controller');
 const router = require('express').Router();
 
 module.exports = app => {
-    router.post("/", working_mode.create);
-    router.get("/", working_mode.findAll);
-    router.get("/:id", working_mode.findOne);
-    router.put("/:id", working_mode.update);
-    router.delete("/:id", working_mode.delete);
-    router.delete("/", working_mode.deleteAll);
+    router.post("/", controller.create);
+    router.get("/", controller.findAll);
+    router.get("/:id", controller.findOne);
+    router.put("/:id", controller.update);
+    router.delete("/:id", controller.delete);
     app.use('/api/working_mode', router);
 };

@@ -1,12 +1,12 @@
-const reception = require('../controllers/reception.controller');
+const controller = require('../controllers/reception.controller');
 const router = require('express').Router();
 
 module.exports = app => {
-    router.post("/", reception.create);
-    router.get("/", reception.findAll);
-    router.get("/:id", reception.findOne);
-    router.put("/:id", reception.update);
-    router.delete("/:id", reception.delete);
-    router.delete("/", reception.deleteAll);
+    router.post("/", controller.create);
+    router.get("/", controller.findAll);
+    router.get("/:id", controller.findOne);
+    router.put("/:id", controller.update);
+    router.delete("/:id", controller.delete);
+    router.delete("/", controller.deleteAll);
     app.use('/api/reception', router);
 };

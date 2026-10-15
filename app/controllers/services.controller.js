@@ -1,74 +1,36 @@
 const db = require('../models');
-const Services = db.services;
-const Op = db.Sequelize.Op;
+const Service = db.services;
 
 exports.create = (req, res) => {
-    if (!req.body.description) {
-        res.status(400).send({ message: 'Контент не может быть пустым!' });
-        return;
-    }
-    const services = {
-        description: req.body.description,
-        cabinet: req.body.cabinet,
-        phone: req.body.phone
-    };
-    Services.create(services).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при добавлении...'
-        });
-    });
+    if (!req.body.description) return res.status(400).send({ message: 'Описание не может быть пустым!' });
+    Service.create(req.body).then(data => res.status(200).send(data))
+        .catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.findAll = (req, res) => {
-    const description = req.query.description;
-    const condition = description ? { description: { [Op.like]: `%${description}%` } } : null;
-    Services.findAll({ where: condition }).then(data => {
-        res.status(200).send(data);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при получении...'
-        });
-    });
+    Service.findAll({ include: [{ model: db.departments, as: 'department' }] })
+        .then(data => res.status(200).send(data))
+        .catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.findOne = (req, res) => {
-    const id = req.params.id;
-    Services.findByPk(id).then(data => {
-        if (data) res.status(200).send(data);
-        else res.status(404).send({ message: `Не удаётся найти ID ${id}.`});
-    }).catch(() => {
-        res.status(500).send({ message: `Ошибка при получении ID ${id}.` });
-    });
+    Service.findByPk(req.params.id, { include: [{ model: db.departments, as: 'department' }] })
+        .then(data => {
+            if (data) res.status(200).send(data);
+            else res.status(404).send({ message: `ID ${req.params.id} не найден.` });
+        }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.update = (req, res) => {
-    const id = req.params.id;
-    Services.update(req.body, { where: { id: id } }).then(num => {
+    Service.update(req.body, { where: { id: req.params.id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно обновлено!' });
-        else res.status(404).send({ message: `Невозможно обновить ID ${id}. Возможно, req.body пуст!` });
-    }).catch(() => {
-        res.status(500).send({ message: `Ошибка при обновлении ID ${id}` });
-    });
+        else res.status(404).send({ message: 'Невозможно обновить.' });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
 
 exports.delete = (req, res) => {
-    const id = req.params.id;
-    Services.destroy({ where: { id: id } }).then(num => {
+    Service.destroy({ where: { id: req.params.id } }).then(num => {
         if (num == 1) res.status(200).send({ message: 'Успешно удалено!' });
-        else res.status(404).send({ message: `Невозможно удалить ID ${id}. Возможно, ничего не найдено!` });
-    }).catch(() => {
-        res.status(500).send({ message: `Не удалось удалить ID ${id}` });
-    });
-};
-
-exports.deleteAll = (req, res) => {
-    Services.destroy({ where: {}, truncate: false }).then(nums => {
-        res.status(200).send({ message: `Количество удалённых объектов: ${nums}.` });
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || 'Произошла ошибка при удалении...'
-        });
-    });
+        else res.status(404).send({ message: 'Не удалось удалить.' });
+    }).catch(err => res.status(500).send({ message: err.message }));
 };
